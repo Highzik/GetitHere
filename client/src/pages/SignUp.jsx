@@ -24,11 +24,13 @@ export default function SignUp() {
       const data = await res.json()
       if (data.success === false) {
         setError(data.message);
-        setLoading(!loading)
+        setLoading(loading)
         return;
       }
+      setLoading(!loading)
       navigate('/sign-in')
     } catch (error) {
+      setLoading(loading)
       setError(error)
     }
   }
