@@ -13,7 +13,8 @@ export default {
       navBG: "#DDE8E4",
       hover: "#FE9B86",
       hoverText: "#FFF",
-      google: "#42854"
+      google: "red",
+      success: "green"
     },
   },
   plugins: [],

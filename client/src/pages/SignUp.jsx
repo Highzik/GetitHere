@@ -1,11 +1,53 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SignIn from "./SignIn";
 
 export default function SignUp() {
   const [text, setText] = useState(true);
+  const [formData, setFormData] = useState({})
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(null)
+
+  // Function to toggle on signIn form and toggle off singup form
   const changeTheText = () => {
     setText(!text);
+  }
+
+  // navigate to the signin page if user data is successful
+  const navigate = useNavigate()
+
+  // Function to get user and store user data
+  const getUserData = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value })
+  }
+
+  // Functionality to send user data to the database
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      const data = await res.json()
+      if (!data.ok) {
+        throw new Error(data.error || "Something went wrong")
+      }
+      setSuccessMessage("User Successfully Created ☺️☺️")
+      setLoading(false)
+      setTimeout(() => {
+        navigate('/sign-in')
+      }, 3000)
+
+    } catch (error) {
+      setError(error.message)
+      setLoading(false)
+    }
   }
 
   return (
@@ -17,8 +59,9 @@ export default function SignUp() {
           <p className="mb-3 font-semibold max-md:">Your one stop shop of getting everything needed...</p>
           <button onClick={changeTheText} className="bg-hover py-2 px-6 text-hoverText font-semibold text-md rounded-md shadow-lg">{text ? "Click To Sign In" : "Click To Sign Up"}</button>
         </section>
+
         <aside className="shadow-2xl px-8 max-w-xl mx-auto flex-1 rounded-lg mt-4">
-          <form>
+          <form onSubmit={handleSubmit}>
             <h1 className="text-center font-semibold text-2xl py-5">Sign Up</h1>
             <input
               type="text"
@@ -26,44 +69,51 @@ export default function SignUp() {
               placeholder="First name"
               required
               className="w-full mb-2 p-3 bg-navBG focus:outline-none"
+              onChange={getUserData}
             />
+
             <input
               type="text"
               id="lastName"
               placeholder="Last name"
               required
               className="w-full mb-2 p-3 bg-navBG focus:outline-none"
-
+              onChange={getUserData}
             />
+
             <input
               type="text"
               id="userName"
               placeholder="Username"
               required
               className="w-full mb-2 p-3 bg-navBG focus:outline-none"
-
+              onChange={getUserData}
             />
+
             <input
               type="email"
               id="email"
               placeholder="Email"
               required
               className="w-full mb-2 p-3 bg-navBG focus:outline-none"
-
+              onChange={getUserData}
             />
+
             <input
               type="password"
               id="password"
               placeholder="Password"
               required
               className="w-full mb-2 p-3 bg-navBG focus:outline-none"
-
+              onChange={getUserData}
             />
+
             <button
-
-              className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">SIGN UP
+              disabled={loading}
+              className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "LOADING..." : "SIGN UP"}
             </button>
-
+            {error && <p className="text-google font-semibold text-md">{error}</p>}
+            {successMessage && <p className="text-success font-semibold text-md">{successMessage}</p>}
           </form>
           <div className="flex gap-3 py-3">
             <p className="font-semibold text-md">Already have an account? </p>
