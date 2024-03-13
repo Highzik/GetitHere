@@ -11,8 +11,8 @@ const app = express()
 app.use(express.json());
 
 // creating a port route of 4444
-app.listen(4444, () => {
-  console.log("App is running on Port 4444")
+app.listen(4433, () => {
+  console.log("App is running on Port 4433")
 })
 
 // configuring the environment folder
@@ -36,7 +36,7 @@ app.use("/api/auth", signupRouter)
 // creating a middleware
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500
-  const message = err.message || "Internal Server Error"
+  const message = err.message || "Unable to Sign Up. Please try again"
   return res.status(statusCode).json({
     success: false,
     message,

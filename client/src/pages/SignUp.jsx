@@ -1,31 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SignIn from "./SignIn";
 
 export default function SignUp() {
-  const [text, setText] = useState(true);
+  const [text, setText] = useState(true)
   const [formData, setFormData] = useState({})
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const navigate = useNavigate();
 
-  // Function to toggle on signIn form and toggle off singup form
   const changeTheText = () => {
     setText(!text);
   }
 
-  // navigate to the signin page if user data is successful
-  const navigate = useNavigate()
-
-  // Function to get user and store user data
   const getUserData = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
   }
 
-  // Functionality to send user data to the database
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -36,20 +31,23 @@ export default function SignUp() {
       })
       const data = await res.json()
       if (!res.ok) {
-        throw new Error("Failed to sign up. Please, try again later")
+        setLoading(true);
+        throw new Error("Unable to sign up. Please refresh page try again")
       }
-      setSuccessMessage("User Successfully Created")
-      setLoading(false)
+      setSuccessMessage("User Successfully Created");
+      setLoading(true)
       setTimeout(() => {
-        navigate('/sign-in')
+        navigate("/sign-in")
       }, 2000)
-
     } catch (error) {
       setError(error.message)
-      setLoading(false)
+      setLoading(true)
+      setTimeout(() => {
+        setLoading(false)
+        setError(error)
+      }, 2000)
     }
   }
-
   return (
     <>{text ?
       <main className="flex flex-col sm:flex-row max-w-4xl mx-auto py-16 px-5">
@@ -112,7 +110,7 @@ export default function SignUp() {
               disabled={loading}
               className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "LOADING..." : "SIGN UP"}
             </button>
-            {error && <p className="text-google font-semibold text-sm">{error}</p>}
+            {error && <p className="text-google font-semibold text-sm">{error.message}</p>}
             {successMessage && <p className="text-success font-semibold text-sm">{successMessage}</p>}
           </form>
           <div className="flex gap-3 py-3">
