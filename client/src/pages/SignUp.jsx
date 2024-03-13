@@ -32,7 +32,7 @@ export default function SignUp() {
       const data = await res.json()
       if (!res.ok) {
         setLoading(true);
-        throw new Error("Unable to sign up. Please refresh page try again")
+        throw new Error("Unable to sign up. Please refresh page and try again")
       }
       setSuccessMessage("User Successfully Created");
       setLoading(true)

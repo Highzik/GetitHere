@@ -6,6 +6,8 @@ export default function SignIn() {
   const [text, setText] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({})
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null)
 
   // function to toggle on and off the sign in and sign up form
   const changeTheText = () => {
@@ -20,6 +22,38 @@ export default function SignIn() {
     setFormData({ ...formData, [e.target.id]: e.target.value })
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setLoading(true)
+        throw new Error("Invalid credentials")
+      }
+      setLoading(true)
+      setSuccessMessage('Signed in successfully')
+      setTimeout(() => {
+        setLoading(false)
+        navigate("/")
+      }, 2000)
+    } catch (error) {
+      setLoading(true)
+      setError(error.message)
+      setTimeout(() => {
+        setLoading(false)
+        setError(error)
+      }, 2000)
+    }
+  }
+
   return (
     <>{text ?
       <main className="flex flex-col sm:flex-row max-w-4xl mx-auto py-16 px-5">
@@ -31,7 +65,7 @@ export default function SignIn() {
         </section>
 
         <aside className="shadow-2xl px-8 max-w-xl mx-auto flex-1 rounded-lg mt-4">
-          <form>
+          <form onSubmit={handleSubmit}>
             <h1 className="text-center font-semibold text-2xl py-5">Sign in</h1>
             <input
               type="email"
@@ -53,7 +87,10 @@ export default function SignIn() {
 
             <button
               disabled={loading}
-              className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "Loading..." : "SIGN IN"}</button>
+              className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "Loading..." : "SIGN IN"}
+            </button>
+            {error && <p className="text-google font-semibold text-sm">{error.message}</p>}
+            {successMessage && <p className="text-success font-semibold text-sm">{successMessage}</p>}
           </form>
           <div className="flex gap-3 py-3">
             <p className="text-md font-semibold">Dont have an account?</p>

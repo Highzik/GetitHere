@@ -9,7 +9,7 @@ const navigation = [
   { name: 'Team', to: 'team', current: false },
   { name: 'Projects', to: 'projects', current: false },
   { name: 'Get Started', to: 'sign-up', current: false },
-  // { to: "/", current: false },
+  { name: "Home", to: "/", current: false },
   // { to: "sign-in", current: false }
 ]
 
