@@ -42,7 +42,7 @@ export default function SignUp() {
       setLoading(false)
       setTimeout(() => {
         navigate('/sign-in')
-      }, 3000)
+      }, 2000)
 
     } catch (error) {
       setError(error.message)
