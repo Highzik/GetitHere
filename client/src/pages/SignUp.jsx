@@ -35,10 +35,10 @@ export default function SignUp() {
         body: JSON.stringify(formData)
       })
       const data = await res.json()
-      if (!data.ok) {
-        throw new Error(data.error || "Something went wrong")
+      if (!res.ok) {
+        throw new Error("Failed to sign up. Please, try again later")
       }
-      setSuccessMessage("User Successfully Created ☺️☺️")
+      setSuccessMessage("User Successfully Created")
       setLoading(false)
       setTimeout(() => {
         navigate('/sign-in')
@@ -112,8 +112,8 @@ export default function SignUp() {
               disabled={loading}
               className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "LOADING..." : "SIGN UP"}
             </button>
-            {error && <p className="text-google font-semibold text-md">{error}</p>}
-            {successMessage && <p className="text-success font-semibold text-md">{successMessage}</p>}
+            {error && <p className="text-google font-semibold text-sm">{error}</p>}
+            {successMessage && <p className="text-success font-semibold text-sm">{successMessage}</p>}
           </form>
           <div className="flex gap-3 py-3">
             <p className="font-semibold text-md">Already have an account? </p>
