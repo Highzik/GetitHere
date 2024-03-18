@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SignUp from "./SignUp";
+import { motion } from "framer-motion"
+import Notification from "./Notification";
 
 export default function SignIn() {
   const [text, setText] = useState(true);
@@ -43,7 +45,7 @@ export default function SignIn() {
       setTimeout(() => {
         setLoading(false)
         navigate("/")
-      }, 2000)
+      }, 4000)
     } catch (error) {
       setLoading(true)
       setError(error.message)
@@ -64,7 +66,12 @@ export default function SignIn() {
           <button onClick={changeTheText} className="bg-hover py-2 px-6 text-hoverText font-semibold text-md rounded-md shadow-lg">{text ? "Click To Sign Up" : "Click To Sign In"}</button>
         </section>
 
-        <aside className="shadow-2xl px-8 max-w-xl mx-auto flex-1 rounded-lg mt-4">
+        <motion.aside
+          initial={{ opacity: 0, rotateY: -180 }}
+          animate={{ opacity: 1, rotateY: 0 }}
+          exit={{ opacity: 0, rotateY: 180 }}
+          transition={{ duration: 0.2 }}
+          className="shadow-2xl px-8 max-w-xl mx-auto flex-1 rounded-lg mt-4">
           <form onSubmit={handleSubmit}>
             <h1 className="text-center font-semibold text-2xl py-5">Sign in</h1>
             <input
@@ -89,8 +96,6 @@ export default function SignIn() {
               disabled={loading}
               className="bg-hover text-hoverText font-semibold text-md w-full p-3 mb-2 rounded-md">{loading ? "Loading..." : "SIGN IN"}
             </button>
-            {error && <p className="text-google font-semibold text-sm">{error.message}</p>}
-            {successMessage && <p className="text-success font-semibold text-sm">{successMessage}</p>}
           </form>
           <div className="flex gap-3 py-3">
             <p className="text-md font-semibold">Dont have an account?</p>
@@ -98,7 +103,8 @@ export default function SignIn() {
               <span className="text-hover font-bold text-md">Sign Up</span>
             </Link>
           </div>
-        </aside>
+        </motion.aside>
+        <Notification message={error ? error.message : successMessage} isError={error ? true : false} />
       </main>
       : <div>
         <SignUp />
